@@ -34,6 +34,7 @@ public:
 
 private slots:
     void file_open_action();
+    void edit_expand_all_action();
 
 private:
     Ui::MainWindow *ui;

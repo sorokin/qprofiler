@@ -50,6 +50,15 @@ struct MyItem : QTreeWidgetItem
         }
     }
 
+    void expand_all(QTreeWidget* widget)
+    {
+        widget->expandItem(this);
+        for (std::map<QString, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
+        {
+            i->second->expand_all(widget);
+        }
+    }
+
     size_t hits()
     {
         return hit_number;
@@ -122,6 +131,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(file_open_action()));
+    connect(ui->actionExpand_All, SIGNAL(triggered()), SLOT(edit_expand_all_action()));
 }
 
 MainWindow::~MainWindow()
@@ -207,6 +217,11 @@ void MainWindow::file_open_action()
     QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Perf Output (*.txt)"));
     if (filename.size() != 0)
         open_file(filename);
+}
+
+void MainWindow::edit_expand_all_action()
+{
+    ctx.get_root()->expand_all(ui->treeWidget);
 }
 
 
