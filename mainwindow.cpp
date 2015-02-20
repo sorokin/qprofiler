@@ -181,6 +181,9 @@ void MainWindow::read_file(const QString &file)
     if (!f)
         return;
 
+    std::vector<std::string> funcs;
+    funcs.reserve(100);
+
     for (;;)
     {
         std::string buf;
@@ -188,7 +191,7 @@ void MainWindow::read_file(const QString &file)
         if (!f)
             return;
 
-        std::vector<std::string> funcs;
+        funcs.clear();
 
         for (;;)
         {
