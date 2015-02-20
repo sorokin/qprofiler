@@ -1,5 +1,7 @@
-#include "mainwindow.h"
 #include <QApplication>
+
+#include "mainwindow.h"
+#include "benchmark_mode.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,5 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+#ifndef BENCHMARK_MODE
     return a.exec();
+#endif
 }

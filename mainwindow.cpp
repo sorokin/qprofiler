@@ -12,6 +12,7 @@
 
 #include "myitemdelegate.h"
 #include "call_tree_column.h"
+#include "benchmark_mode.h"
 
 struct MyItem : QTreeWidgetItem
 {
@@ -150,8 +151,12 @@ void MainWindow::open_file(QString const& file)
 
     MyItem* root = new MyItem(&ctx, "<root>");
     ctx.set_root(root);
-    //for (size_t i = 0; i != 100; ++i)
+#ifdef BENCHMARK_MODE
+    for (size_t i = 0; i != (BENCHMARK_MODE); ++i)
         read_file(file);
+#else
+    read_file(file);
+#endif
     ctx.get_root()->update_percentage();
     ui->treeWidget->addTopLevelItem(root);
     ctx.get_root()->expand_all_greater_than(ui->treeWidget, ctx.total_hits() / 5);

@@ -20,6 +20,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     myitemdelegate.h \
-    call_tree_column.h
+    call_tree_column.h \
+    benchmark_mode.h
 
 FORMS    += mainwindow.ui
