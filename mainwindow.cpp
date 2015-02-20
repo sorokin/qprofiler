@@ -163,10 +163,11 @@ void MainWindow::open_file(QString const& file)
 
 bool starts_with(std::string const& a, std::string const& b)
 {
-    if (a.size() < b.size())
+    size_t size = b.size();
+    if (a.size() < size)
         return false;
 
-    return std::string(a.begin(), a.begin() + b.size()) == b;
+    return std::equal(a.begin(), a.begin() + size, b.begin());
 }
 
 void MainWindow::read_file(const QString &file)
