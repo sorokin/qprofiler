@@ -10,6 +10,8 @@
 #include <QSettings>
 #include <QFileDialog>
 
+#include "myitemdelegate.h"
+
 struct MyItem : QTreeWidgetItem
 {
     MyItem(MyContext* ctx, QString const& function_name)
@@ -116,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->treeWidget->setItemDelegate(new MyItemDelegate);
     ui->treeWidget->header()->resizeSection(0, 900);
     ui->treeWidget->header()->setStretchLastSection(false);
     ui->treeWidget->sortByColumn(1, Qt::DescendingOrder);
