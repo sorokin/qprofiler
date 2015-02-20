@@ -1,4 +1,5 @@
 #include "myitemdelegate.h"
+#include "call_tree_column.h"
 
 namespace
 {
@@ -13,7 +14,7 @@ namespace
 
 void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    if (index.column() == 2)
+    if (index.column() == CALL_TREE_PERCENTAGE_COLUMN)
     {
         QStyleOptionViewItemV2 opt = QItemDelegate::setOptions(index, option);
         QItemDelegate::drawBackground(painter, opt, index);

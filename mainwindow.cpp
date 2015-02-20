@@ -11,6 +11,7 @@
 #include <QFileDialog>
 
 #include "myitemdelegate.h"
+#include "call_tree_column.h"
 
 struct MyItem : QTreeWidgetItem
 {
@@ -18,21 +19,21 @@ struct MyItem : QTreeWidgetItem
         : ctx(ctx)
         , hit_number(0)
     {
-        this->setText(0, function_name);
+        this->setText(CALL_TREE_FUNCTION_COLUMN, function_name);
     }
 
     void update_percentage()
     {
-        setData(1, 0, QVariant((int)hit_number));
-        setTextAlignment(1, Qt::AlignRight);
-        setData(2, 0, QVariant(percentage()));
-        setTextAlignment(2, Qt::AlignRight);
+        setData(CALL_TREE_SAMLPES_COLUMN, 0, QVariant((int)hit_number));
+        setTextAlignment(CALL_TREE_SAMLPES_COLUMN, Qt::AlignRight);
+        setData(CALL_TREE_PERCENTAGE_COLUMN, 0, QVariant(percentage()));
+        setTextAlignment(CALL_TREE_PERCENTAGE_COLUMN, Qt::AlignRight);
         if (percentage() < 0.5)
         {
             QBrush brush(QColor(Qt::gray));
-            setForeground(0, brush);
-            setForeground(1, brush);
-            setForeground(2, brush);
+            setForeground(CALL_TREE_FUNCTION_COLUMN, brush);
+            setForeground(CALL_TREE_SAMLPES_COLUMN, brush);
+            setForeground(CALL_TREE_PERCENTAGE_COLUMN, brush);
         }
         for (std::map<QString, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
         {
@@ -157,6 +158,7 @@ void MainWindow::open_file(QString const& file)
 
     QSettings settings;
     settings.setValue("opened-file", QVariant(file));
+    this->setWindowTitle(QString("%1 - QProfiler").arg(file));
 }
 
 bool starts_with(std::string const& a, std::string const& b)

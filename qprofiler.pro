@@ -19,6 +19,7 @@ SOURCES += main.cpp\
     myitemdelegate.cpp
 
 HEADERS  += mainwindow.h \
-    myitemdelegate.h
+    myitemdelegate.h \
+    call_tree_column.h
 
 FORMS    += mainwindow.ui
