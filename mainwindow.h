@@ -2,23 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "my_context.h"
+#include "profile.h"
 
 namespace Ui {
 class MainWindow;
 }
-
-struct MyItem;
-
-struct MyContext
-{
-    MyContext();
-    void set_root(MyItem* item);
-    MyItem* get_root();
-    size_t total_hits();
-
-private:
-    MyItem* root;
-};
 
 class MainWindow : public QMainWindow
 {
@@ -29,16 +18,22 @@ public:
     ~MainWindow();
 
     void open_file(QString const& file);
-    void read_file(QString const& file);
     void closeEvent(QCloseEvent*);
 
 private slots:
     void file_open_action();
     void edit_expand_all_action();
+    void view_call_tree();
+    void view_reverse_call_tree();
+
+private:
+    void clear_tree();
+    void show_tree();
 
 private:
     Ui::MainWindow *ui;
     MyContext ctx;
+    profile p;
 };
 
 #endif // MAINWINDOW_H
