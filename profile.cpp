@@ -22,6 +22,15 @@ bool starts_with(std::string const& a, std::string const& b)
     return std::equal(a.begin(), a.begin() + size, b.begin());
 }
 
+template <size_t N>
+bool starts_with(std::string const& a, char const (&b)[N])
+{
+    if (a.size() < N)
+        return false;
+
+    return std::equal(a.begin(), a.begin() + N, static_cast<char const*>(b));
+}
+
 profile::profile()
 {}
 
@@ -73,7 +82,7 @@ void profile::build_tree(MyItem* root)
             if (i == funcs.rbegin() && starts_with(*i, "[unknown]"))
                 continue;
 
-            c = c->push(QString::fromStdString(*i));
+            c = c->push(*i);
         }
         c->touch();
     }
@@ -87,7 +96,7 @@ void profile::build_reverse_tree(MyItem* root)
         MyItem* c = root;
         for (std::vector<std::string>::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
         {
-            c = c->push(QString::fromStdString(*i));
+            c = c->push(*i);
         }
         c->touch();
     }

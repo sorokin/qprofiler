@@ -22,7 +22,7 @@ void MyItem::update_percentage()
         setForeground(CALL_TREE_SAMLPES_COLUMN, brush);
         setForeground(CALL_TREE_PERCENTAGE_COLUMN, brush);
     }
-    for (std::map<QString, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
+    for (std::map<std::string, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
     {
         i->second->update_percentage();
     }
@@ -33,7 +33,7 @@ void MyItem::expand_all_greater_than(QTreeWidget *widget, size_t limit)
     if (hit_number <= limit)
         return;
     widget->expandItem(this);
-    for (std::map<QString, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
+    for (std::map<std::string, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
     {
         i->second->expand_all_greater_than(widget, limit);
     }
@@ -42,7 +42,7 @@ void MyItem::expand_all_greater_than(QTreeWidget *widget, size_t limit)
 void MyItem::expand_all(QTreeWidget *widget)
 {
     widget->expandItem(this);
-    for (std::map<QString, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
+    for (std::map<std::string, MyItem*>::const_iterator i = children.begin(); i != children.end(); ++i)
     {
         i->second->expand_all(widget);
     }
@@ -67,18 +67,20 @@ void MyItem::touch()
     //setText(1, QString::number(hit_number));
 }
 
-MyItem *MyItem::push(const QString &function_name)
+MyItem *MyItem::push(std::string const& function_name)
 {
     touch();
 
-    MyItem* child = children[function_name];
-    if (!child)
+    auto i = children.find(function_name);
+    if (i == children.end())
     {
-        child = new MyItem(ctx, function_name);
-        children[function_name] = child;
+        MyItem* child = new MyItem(ctx, QString::fromStdString(function_name));
+        i = children.insert(i, std::make_pair(function_name, child));
+        this->insertChild(childCount(), child);
+        return child;
     }
-
-    this->insertChild(childCount(), child);
-
-    return child;
+    else
+    {
+        return i->second;
+    }
 }

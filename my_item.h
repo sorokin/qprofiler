@@ -3,6 +3,7 @@
 
 #include <QTreeWidgetItem>
 #include <QString>
+#include <string>
 
 struct MyContext;
 
@@ -20,12 +21,12 @@ struct MyItem : QTreeWidgetItem
 
     void touch();
 
-    MyItem* push(QString const& function_name);
+    MyItem* push(std::string const& function_name);
 
 private:
     MyContext* ctx;
     size_t hit_number;
-    std::map<QString, MyItem*> children;
+    std::map<std::string, MyItem*> children;
 };
 
 #endif // MY_ITEM_H
