@@ -1,1 +1,11 @@
-qprofiler.pro.user
+CMakeCache.txt
+CMakeFiles/
+CMakeLists.txt.user
+Makefile
+cmake_install.cmake
+moc_mainwindow.cxx
+moc_mainwindow.cxx_parameters
+moc_myitemdelegate.cxx
+moc_myitemdelegate.cxx_parameters
+qprofiler
+qprofiler.cbp

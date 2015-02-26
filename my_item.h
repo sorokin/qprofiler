@@ -4,6 +4,9 @@
 #include <QTreeWidgetItem>
 #include <QString>
 #include <string>
+#include <unordered_map>
+
+#include "string_ref.h"
 
 struct MyContext;
 
@@ -21,12 +24,12 @@ struct MyItem : QTreeWidgetItem
 
     void touch();
 
-    MyItem* push(std::string const& function_name);
+    MyItem* push(const char* function_name);
 
 private:
     MyContext* ctx;
     size_t hit_number;
-    std::map<std::string, MyItem*> children;
+    std::unordered_map<const char*, MyItem*> children;
 };
 
 #endif // MY_ITEM_H

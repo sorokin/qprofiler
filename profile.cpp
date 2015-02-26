@@ -31,6 +31,15 @@ bool starts_with(std::string const& a, char const (&b)[N])
     return std::equal(a.begin(), a.begin() + N, static_cast<char const*>(b));
 }
 
+template <size_t N>
+bool starts_with(string_ref const& a, char const (&b)[N])
+{
+    if (a.size() < N)
+        return false;
+
+    return std::equal(a.begin(), a.begin() + N, static_cast<char const*>(b));
+}
+
 profile::profile()
 {}
 
@@ -41,7 +50,7 @@ void profile::open(const std::string &filename)
     if (!f)
         return;
 
-    std::vector<std::string> funcs;
+    std::vector<string_ref> funcs;
     funcs.reserve(100);
 
     for (;;)
@@ -61,10 +70,12 @@ void profile::open(const std::string &filename)
             if (buf.empty())
                 break;
 
-            std::string::iterator i = std::find_if(buf.begin(), buf.end(), &is_not_whitespace);
-            i = std::find_if(i, buf.end(), &is_whitespace);
-            i = std::find_if(i, buf.end(), &is_not_whitespace);
-            funcs.push_back(std::string(i, buf.end()));
+            string_ref bufref(buf);
+
+            const char* i = std::find_if(bufref.begin(), bufref.end(), &is_not_whitespace);
+            i = std::find_if(i, bufref.end(), &is_whitespace);
+            i = std::find_if(i, bufref.end(), &is_not_whitespace);
+            funcs.push_back(frame_names.put(string_ref(i, bufref.end())));
         }
 
         samples.push_back(backtrace(funcs));
@@ -77,12 +88,12 @@ void profile::build_tree(MyItem* root)
     {
         auto& funcs = i->frames;
         MyItem* c = root;
-        for (std::vector<std::string>::const_reverse_iterator i = funcs.rbegin(); i != funcs.rend(); ++i)
+        for (std::vector<string_ref>::const_reverse_iterator i = funcs.rbegin(); i != funcs.rend(); ++i)
         {
             if (i == funcs.rbegin() && starts_with(*i, "[unknown]"))
                 continue;
 
-            c = c->push(*i);
+            c = c->push(i->begin());
         }
         c->touch();
     }
@@ -94,14 +105,14 @@ void profile::build_reverse_tree(MyItem* root)
     {
         auto& funcs = i->frames;
         MyItem* c = root;
-        for (std::vector<std::string>::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
+        for (std::vector<string_ref>::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
         {
-            c = c->push(*i);
+            c = c->push(i->begin());
         }
         c->touch();
     }
 }
 
-profile::backtrace::backtrace(std::vector<std::string> frames)
+profile::backtrace::backtrace(std::vector<string_ref> frames)
     : frames(frames)
 {}

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "string_pool.h"
 
 struct MyItem;
 
@@ -17,11 +18,12 @@ struct profile
 private:
     struct backtrace
     {
-        backtrace(std::vector<std::string> frames);
+        backtrace(std::vector<string_ref> frames);
 
-        std::vector<std::string> frames;
+        std::vector<string_ref> frames;
     };
 
+    string_pool frame_names;
     std::vector<backtrace> samples;
 };
 
