@@ -88,5 +88,13 @@ int main()
     test_demangling("_ZNV6mytype5vargoEv",                  "mytype::vargo() volatile");
     test_demangling("_ZNVK6mytype6cvargoEv",                "mytype::cvargo() const volatile");
 
+    test_demangling("_ZN6mytypeC1ERKi",                     "mytype::mytype(int const&)");
+    test_demangling("_ZN6mytypeC2ERKi",                     "mytype::mytype(int const&)");
+    test_demangling("_ZN6mytypeC3ERKi",                     "mytype::mytype(int const&)");
+
+    test_demangling("_ZN6mytypeD0Ev",                       "mytype::~mytype()");
+    test_demangling("_ZN6mytypeD1Ev",                       "mytype::~mytype()");
+    test_demangling("_ZN6mytypeD2Ev",                       "mytype::~mytype()");
+
     std::cerr << number_of_test_passed << " tests passed, " << number_of_test_failed << " tests failed\n";
 }

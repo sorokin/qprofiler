@@ -36,15 +36,20 @@ namespace
         return res;
     }
 
+    void out_string(char const* start, char const* end, std::string& outbuf, std::pair<size_t, size_t>* name_range)
+    {
+        if (name_range)
+            *name_range = std::make_pair(outbuf.size(), outbuf.size() + (end - start));
+
+        outbuf.append(start, end);
+    }
+
     void read_string(char const*& pos, char const* end, size_t n, std::string& outbuf, std::pair<size_t, size_t>* name_range)
     {
         if ((end - pos) < n)
             throw demangling_error();
 
-        if (name_range)
-            *name_range = std::make_pair(outbuf.size(), outbuf.size() + n);
-
-        outbuf.append(pos, pos + n);
+        out_string(pos, pos + n, outbuf, name_range);
         pos += n;
     }
 
@@ -91,12 +96,50 @@ namespace
                 std::pair<size_t, size_t> nr;
 
                 size_t n = read_number(pos, end);
+                char const* const name_start = pos;
                 read_string(pos, end, n, outbuf, &nr);
+                char const* const name_end = pos;
 
                 if (pos == end)
                     throw demangling_error();
 
-                if (*pos == 'E')
+                if (*pos == 'C')
+                {
+                    ++pos;
+                    outbuf += "::";
+                    out_string(name_start, name_end, outbuf, name_range);
+
+                    if (pos == end)
+                        throw demangling_error();
+                    if (*pos != '1' && *pos != '2' && *pos != '3')
+                        throw demangling_error();
+                    ++pos;
+                    if (pos == end)
+                        throw demangling_error();
+                    if (*pos != 'E')
+                        throw demangling_error();
+                    ++pos;
+                    break;
+                }
+                else if (*pos == 'D')
+                {
+                    ++pos;
+                    outbuf += "::~";
+                    out_string(name_start, name_end, outbuf, name_range);
+
+                    if (pos == end)
+                        throw demangling_error();
+                    if (*pos != '0' && *pos != '1' && *pos != '2')
+                        throw demangling_error();
+                    ++pos;
+                    if (pos == end)
+                        throw demangling_error();
+                    if (*pos != 'E')
+                        throw demangling_error();
+                    ++pos;
+                    break;
+                }
+                else if (*pos == 'E')
                 {
                     ++pos;
                     if (name_range)
