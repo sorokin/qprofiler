@@ -1,6 +1,7 @@
 #include "my_item.h"
 #include "call_tree_column.h"
 #include "my_context.h"
+#include "demangle/demangle.h"
 
 MyItem::MyItem(MyContext *ctx, const QString &function_name)
     : ctx(ctx)
@@ -74,7 +75,18 @@ MyItem *MyItem::push(const char* function_name)
     auto i = children.find(function_name);
     if (i == children.end())
     {
-        MyItem* child = new MyItem(ctx, QString(function_name));
+        std::string demangled;
+        try
+        {
+            demangling_result res = demangle(string_ref(function_name, function_name + strlen(function_name)));
+            demangled = std::move(res.demangled);
+        }
+        catch (demangling_error const&)
+        {
+            demangled = function_name;
+        }
+
+        MyItem* child = new MyItem(ctx, QString::fromStdString(demangled));
         i = children.insert(i, std::make_pair(function_name, child));
         this->insertChild(childCount(), child);
         return child;
