@@ -12,10 +12,9 @@ void test_demangling(std::string const& input, std::string const& expected)
         if (res.demangled != expected)
         {
             std::cerr << "demangling failed\n"
-                      << "  input:    " << input
-                      << "  output:   " << res.demangled
-                      << "  expected: " << expected
-                      << "\n";
+                      << "  input:    " << input << "\n"
+                      << "  output:   " << res.demangled << "\n"
+                      << "  expected: " << expected << "\n";
             ++number_of_test_failed;
         }
         else
@@ -79,6 +78,11 @@ int main()
     test_demangling("_Z3quxPFPFvvEvE",                      "qux(void (*(*)())())");
     test_demangling("_Z3quxPFPvvE",                         "qux(void* (*)())");
     test_demangling("_Z3quxPFRA10_ivE",                     "qux(int (& (*)()) [10])");
+
+    test_demangling("_Z3fooM6mytypei",                      "foo(int mytype::*)");
+    test_demangling("_Z3fooM6mytypeiS0_",                   "foo(int mytype::*, int mytype::*)");
+    test_demangling("_Z3fooM6mytypeFiPiPKiEMS_FPS0_S4_E",   "foo(int (mytype::*)(int*, int const*), int** (mytype::*)(int (mytype::*)(int*, int const*)))");
+    test_demangling("_Z3fooM6mytypeKFivE",                  "foo(int (mytype::*)() const)");
 
     test_demangling("_ZN2ns3bazEv",                         "ns::baz()");
     test_demangling("_ZN3ns13ns23bazEv",                    "ns1::ns2::baz()");

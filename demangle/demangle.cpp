@@ -144,6 +144,7 @@ namespace
     }
 
     void print_seqid(demangle_context& ctx, size_t i, std::string& outbuf);
+    void demangle_type(demangle_context& ctx, char const*& pos, char const* end, std::string& out);
 
     seqid demangle_seqid(demangle_context& ctx, char const*& pos, char const* end, std::string& outbuf)
     {
@@ -430,13 +431,26 @@ namespace
             {
                 char const* const type_start = pos;
                 cv_qualifiers cv_quals = read_cv_qualifiers(pos, end);
+                if (pos == end)
+                    throw demangling_error();
+                bool is_function = *pos == 'F';
+                if (is_function)
+                {
+                    if (cv_quals & QUAL_CONST)
+                        prepend_suffix(" const");
+                    if (cv_quals & QUAL_VOLATILE)
+                        prepend_suffix(" volatile");
+                }
                 rhs_type rhs = demangle_type_rec(ctx, pos, end, out, prepend_suffix);
                 char const* const type_end = pos;
                 ctx.push(type_seqid, string_ref(type_start, type_end));
-                if (cv_quals & QUAL_CONST)
-                    out(" const");
-                if (cv_quals & QUAL_VOLATILE)
-                    out(" volatile");
+                if (!is_function)
+                {
+                    if (cv_quals & QUAL_CONST)
+                        out(" const");
+                    if (cv_quals & QUAL_VOLATILE)
+                        out(" volatile");
+                }
                 return rhs;
             }
         case 'P':
@@ -468,6 +482,40 @@ namespace
                 out(c == 'P' ? "*" :
                     c == 'R' ? "&" :
                     "&&");
+                return rhs == function ? ptr_to_function : none;
+            }
+        case 'M':
+            {
+                char const* const type_start = pos;
+                ++pos;
+
+                std::string class_name;
+                demangle_type(ctx, pos, end, class_name);
+
+                rhs_type rhs = demangle_type_rec(ctx, pos, end, out, prepend_suffix);
+                char const* const type_end = pos;
+
+                ctx.push(type_seqid, string_ref(type_start, type_end));
+                if (rhs == function)
+                {
+                    out(" (");
+                    prepend_suffix(")");
+                }
+                else if (rhs == array)
+                {
+                    out(" (");
+                    prepend_suffix(") ");
+                }
+                else if (rhs == function_returning_ptr_to_function)
+                {
+                    out("(");
+                    prepend_suffix(")");
+                }
+                else
+                    out(" ");
+
+                out(class_name.c_str());
+                out("::*");
                 return rhs == function ? ptr_to_function : none;
             }
         case 'F':
@@ -531,15 +579,20 @@ namespace
         out(suffix.c_str());
     }
 
+    void demangle_type(demangle_context& ctx, char const*& pos, char const* end, std::string& out)
+    {
+        demangle_type(ctx, pos, end, [&](char const* msg) {
+            out += msg;
+        });
+    }
+
     void print_seqid(demangle_context& ctx, size_t i, std::string& outbuf)
     {
         subst const& sub = ctx.substs[i];
         if (sub.qualifier == type_seqid)
         {
             char const* pos = sub.name.begin();
-            demangle_type(ctx, pos, sub.name.end(), [&](char const* msg) {
-                outbuf += msg;
-            });
+            demangle_type(ctx, pos, sub.name.end(), outbuf);
             return;
         }
         if (sub.qualifier != null_seqid)
@@ -577,9 +630,7 @@ namespace
             else
                 first = false;
 
-            demangle_type(ctx, pos, end, [&] (char const* type) {
-                outbuf += type;
-            });
+            demangle_type(ctx, pos, end, outbuf);
         }
 
         outbuf += ')';
