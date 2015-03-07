@@ -96,5 +96,16 @@ int main()
     test_demangling("_ZN6mytypeD1Ev",                       "mytype::~mytype()");
     test_demangling("_ZN6mytypeD2Ev",                       "mytype::~mytype()");
 
+    test_demangling("_ZN6mytype3barERS_",                   "mytype::bar(mytype&)");
+    test_demangling("_ZN6mytypeC1ERKS_",                    "mytype::mytype(mytype const&)");
+    test_demangling("_Z3fooPiS_S_",                         "foo(int*, int*, int*)");
+    test_demangling("_Z3fooPKiRS_OS_",                      "foo(int const*, int const&, int const&&)");
+    test_demangling("_Z3fooRA10_iS0_S0_",                   "foo(int (&) [10], int (&) [10], int (&) [10])");
+    test_demangling("_Z3fooPFPiRiPKiEPFRS1_PS_S_E",         "foo(int* (*)(int&, int const*), int const& (*)(int**, int*))");
+    test_demangling("_Z3fooPFvvES0_",                       "foo(void (*)(), void (*)())");
+
+    test_demangling("_ZN3foo3foo3fooENS0_3barES1_NS_3bazE", "foo::foo::foo(foo::foo::bar, foo::foo::bar, foo::baz)");
+    test_demangling("_ZN3foo3foo3fooENS_3bazES1_NS0_3barE", "foo::foo::foo(foo::baz, foo::baz, foo::foo::bar)");
+
     std::cerr << number_of_test_passed << " tests passed, " << number_of_test_failed << " tests failed\n";
 }
