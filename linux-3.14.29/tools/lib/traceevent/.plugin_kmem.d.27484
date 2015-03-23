@@ -1,0 +1,3 @@
+plugin_kmem.o: \
+ /home/ivan/d/linux-3.14.29/tools/lib/traceevent/plugin_kmem.c \
+ /home/ivan/d/linux-3.14.29/tools/lib/traceevent/event-parse.h

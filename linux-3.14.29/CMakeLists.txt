@@ -1,0 +1,221 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(perf)
+
+set(perf_INCLUDE_DIR
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/perf/util/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/arch/x86/include/uapi
+  ${CMAKE_CURRENT_SOURCE_DIR}/arch/x86/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/uapi
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/perf/arch/x86/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/perf/util
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/perf
+  ${CMAKE_CURRENT_SOURCE_DIR}/tools/lib
+)
+
+set(perf_DEFINES
+  -D_LARGEFILE64_SOURCE
+  -D_FILE_OFFSET_BITS=64
+  -D_GNU_SOURCE
+  -DHAVE_LIBELF_SUPPORT
+  -DHAVE_LIBELF_MMAP_SUPPORT
+  -DHAVE_ELF_GETPHDRNUM_SUPPORT
+  -DHAVE_DWARF_SUPPORT
+  -DNO_LIBUNWIND_DEBUG_FRAME
+  -DHAVE_LIBUNWIND_SUPPORT
+  -DHAVE_SLANG_SUPPORT
+  -DHAVE_TIMERFD_SUPPORT
+  -DHAVE_CPLUS_DEMANGLE_SUPPORT
+  -DHAVE_ON_EXIT_SUPPORT
+  -DHAVE_BACKTRACE_SUPPORT
+  -DHAVE_ARCH_X86_64_SUPPORT
+  -DHAVE_PERF_REGS_SUPPORT
+  -DPERF_HTML_PATH="share/doc/perf-doc"
+  -DPERF_MAN_PATH="share/man"
+  -DPERF_INFO_PATH="share/info"
+  -DETC_PERFCONFIG="etc/perfconfig"
+  -DPERF_EXEC_PATH="libexec/perf-core"
+  -DPREFIX="/home/ivan"
+  -DPERF_VERSION="perf in qprofiler"
+  -DYYENABLE_NLS=0
+  -DYYLTYPE_IS_TRIVIAL=0
+  -DLIBDIR="/home/ivan/lib64"
+  -DENABLE_SLFUTURE_CONST
+  -DPYTHON="/bin/python"
+  -DPYTHONPATH="/nowhere/invalid-python-path"
+  -DBINDIR="/nowhere/invalid-bindir"
+  -DNO_LIBPYTHON
+  -DNO_LIBPERL
+)
+
+set(perf_INCLUDE_DIR ${perf_INCLUDE_DIR} PARENT_SCOPE)
+set(perf_DEFINES ${perf_DEFINES} PARENT_SCOPE)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
+
+include_directories(${perf_INCLUDE_DIR})
+add_definitions(${perf_DEFINES})
+
+add_library(
+  perf-util STATIC
+  lib/rbtree.c
+  tools/lib/api/fs/debugfs.c
+  tools/lib/symbol/kallsyms.c
+  tools/lib/traceevent/event-parse.c
+  tools/lib/traceevent/event-plugin.c
+  tools/lib/traceevent/trace-seq.c
+  tools/perf/arch/common.c
+  tools/perf/arch/x86/util/dwarf-regs.c
+  tools/perf/arch/x86/util/header.c
+  tools/perf/arch/x86/util/tsc.c
+  tools/perf/arch/x86/util/unwind.c
+  tools/perf/tests/keep-tracking.c
+  tools/perf/tests/parse-events.c
+  tools/perf/ui/browser.c
+  tools/perf/ui/browsers/annotate.c
+  tools/perf/ui/browsers/header.c
+  tools/perf/ui/browsers/hists.c
+  tools/perf/ui/browsers/map.c
+  tools/perf/ui/browsers/scripts.c
+  tools/perf/ui/helpline.c
+  tools/perf/ui/hist.c
+  tools/perf/ui/progress.c
+  tools/perf/ui/setup.c
+  tools/perf/ui/stdio/hist.c
+  tools/perf/ui/tui/helpline.c
+  tools/perf/ui/tui/progress.c
+  tools/perf/ui/tui/setup.c
+  tools/perf/ui/tui/util.c
+  tools/perf/ui/util.c
+  tools/perf/util/abspath.c
+  tools/perf/util/alias.c
+  tools/perf/util/annotate.c
+  tools/perf/util/bitmap.c
+  tools/perf/util/build-id.c
+  tools/perf/util/callchain.c
+  tools/perf/util/cgroup.c
+  tools/perf/util/color.c
+  tools/perf/util/comm.c
+  tools/perf/util/config.c
+  tools/perf/util/cpumap.c
+  tools/perf/util/ctype.c
+  tools/perf/util/data.c
+  tools/perf/util/debug.c
+  tools/perf/util/dso.c
+  tools/perf/util/dwarf-aux.c
+  tools/perf/util/environment.c
+  tools/perf/util/event.c
+  tools/perf/util/evlist.c
+  tools/perf/util/evsel.c
+  tools/perf/util/exec_cmd.c
+  tools/perf/util/fs.c
+  tools/perf/util/header.c
+  tools/perf/util/help.c
+  tools/perf/util/hist.c
+  tools/perf/util/hweight.c
+  tools/perf/util/intlist.c
+  tools/perf/util/levenshtein.c
+  tools/perf/util/machine.c
+  tools/perf/util/map.c
+  tools/perf/util/pager.c
+  tools/perf/util/parse-events-bison.c
+  tools/perf/util/parse-events-flex.c
+  tools/perf/util/parse-events.c
+  tools/perf/util/parse-options.c
+  tools/perf/util/path.c
+  tools/perf/util/pmu-bison.c
+  tools/perf/util/pmu-flex.c
+  tools/perf/util/pmu.c
+  tools/perf/util/probe-event.c
+  tools/perf/util/probe-finder.c
+  tools/perf/util/pstack.c
+  tools/perf/util/quote.c
+  tools/perf/util/rblist.c
+  tools/perf/util/record.c
+  tools/perf/util/run-command.c
+  tools/perf/util/session.c
+  tools/perf/util/sigchain.c
+  tools/perf/util/sort.c
+  tools/perf/util/srcline.c
+  tools/perf/util/stat.c
+  tools/perf/util/strbuf.c
+  tools/perf/util/strfilter.c
+  tools/perf/util/string.c
+  tools/perf/util/strlist.c
+  tools/perf/util/svghelper.c
+  tools/perf/util/symbol-elf.c
+  tools/perf/util/symbol.c
+  tools/perf/util/target.c
+  tools/perf/util/thread.c
+  tools/perf/util/thread_map.c
+  tools/perf/util/top.c
+  tools/perf/util/trace-event-info.c
+  tools/perf/util/trace-event-parse.c
+  tools/perf/util/trace-event-read.c
+  tools/perf/util/trace-event-scripting.c
+  tools/perf/util/trace-event.c
+  tools/perf/util/unwind.c
+  tools/perf/util/usage.c
+  tools/perf/util/util.c
+  tools/perf/util/values.c
+  tools/perf/util/vdso.c
+  tools/perf/util/wrapper.c
+  tools/perf/util/xyarray.c
+)
+
+add_executable(
+  perf
+  tools/perf/bench/mem-memcpy.c
+  tools/perf/bench/mem-memset.c
+  tools/perf/bench/sched-messaging.c
+  tools/perf/bench/sched-pipe.c
+  tools/perf/builtin-annotate.c
+  tools/perf/builtin-bench.c
+  tools/perf/builtin-buildid-cache.c
+  tools/perf/builtin-buildid-list.c
+  tools/perf/builtin-diff.c
+  tools/perf/builtin-evlist.c
+  tools/perf/builtin-help.c
+  tools/perf/builtin-inject.c
+  tools/perf/builtin-kmem.c
+  tools/perf/builtin-kvm.c
+  tools/perf/builtin-list.c
+  tools/perf/builtin-lock.c
+  tools/perf/builtin-mem.c
+  tools/perf/builtin-probe.c
+  tools/perf/builtin-record.c
+  tools/perf/builtin-report.c
+  tools/perf/builtin-sched.c
+  tools/perf/builtin-script.c
+  tools/perf/builtin-stat.c
+  tools/perf/builtin-timechart.c
+  tools/perf/builtin-top.c
+  tools/perf/perf.c
+  tools/perf/tests/attr.c
+  tools/perf/tests/bp_signal.c
+  tools/perf/tests/bp_signal_overflow.c
+  tools/perf/tests/builtin-test.c
+  tools/perf/tests/code-reading.c
+  tools/perf/tests/dso-data.c
+  tools/perf/tests/evsel-roundtrip-name.c
+  tools/perf/tests/evsel-tp-sched.c
+  tools/perf/tests/hists_link.c
+  tools/perf/tests/mmap-basic.c
+  tools/perf/tests/open-syscall-all-cpus.c
+  tools/perf/tests/open-syscall-tp-fields.c
+  tools/perf/tests/open-syscall.c
+  tools/perf/tests/parse-no-sample-id-all.c
+  tools/perf/tests/perf-record.c
+  tools/perf/tests/perf-time-to-tsc.c
+  tools/perf/tests/pmu.c
+  tools/perf/tests/python-use.c
+  tools/perf/tests/rdpmc.c
+  tools/perf/tests/sample-parsing.c
+  tools/perf/tests/sw-clock.c
+  tools/perf/tests/task-exit.c
+  tools/perf/tests/vmlinux-kallsyms.c
+)
+
+target_link_libraries(perf perf-util -lelf -ldw -lslang -liberty -lunwind -lunwind-x86_64 -lpthread -ldl -lm)
