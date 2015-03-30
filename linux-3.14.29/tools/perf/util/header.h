@@ -9,6 +9,10 @@
 
 #include <linux/bitmap.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	HEADER_RESERVED		= 0,	/* always cleared */
 	HEADER_FIRST_FEATURE	= 1,
@@ -155,5 +159,9 @@ bool is_perf_magic(u64 magic);
  * arch specific callback
  */
 int get_cpuid(char *buffer, size_t sz);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_HEADER_H */

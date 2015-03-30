@@ -62,6 +62,10 @@ extern Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
 #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** struct symbol - symtab entry
  *
  * @ignore - resolvable but tools ignore it (e.g. idle routines)
@@ -280,5 +284,9 @@ int compare_proc_modules(const char *from, const char *to);
 
 int setup_list(struct strlist **list, const char *list_str,
 	       const char *list_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_SYMBOL */

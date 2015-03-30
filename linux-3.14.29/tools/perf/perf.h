@@ -157,6 +157,10 @@
 #include "util/types.h"
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * prctl(PR_TASK_PERF_EVENTS_DISABLE) will (cheaply) disable all
  * counters in the current task.
@@ -278,5 +282,9 @@ struct record_opts {
 	bool	     sample_transaction;
 	unsigned     initial_delay;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

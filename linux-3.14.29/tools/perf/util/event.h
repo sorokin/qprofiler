@@ -8,6 +8,10 @@
 #include "map.h"
 #include "build-id.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mmap_event {
 	struct perf_event_header header;
 	u32 pid, tid;
@@ -280,5 +284,9 @@ size_t perf_event__fprintf(union perf_event *event, FILE *fp);
 
 u64 kallsyms__get_function_start(const char *kallsyms_filename,
 				 const char *symbol_name);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_RECORD_H */

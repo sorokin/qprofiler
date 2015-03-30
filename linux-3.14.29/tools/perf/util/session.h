@@ -12,6 +12,10 @@
 #include <linux/rbtree.h>
 #include <linux/perf_event.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct sample_queue;
 struct ip_callchain;
 struct thread;
@@ -126,4 +130,9 @@ int __perf_session__set_tracepoints_handlers(struct perf_session *session,
 extern volatile int session_done;
 
 #define session_done()	(*(volatile int *)(&session_done))
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* __PERF_SESSION_H */

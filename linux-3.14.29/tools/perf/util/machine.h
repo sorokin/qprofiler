@@ -6,6 +6,10 @@
 #include "map.h"
 #include "event.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct addr_location;
 struct branch_stack;
 struct perf_evsel;
@@ -191,5 +195,9 @@ int machine__synthesize_threads(struct machine *machine, struct target *target,
 	return __machine__synthesize_threads(machine, NULL, target, threads,
 					     perf_event__process, data_mmap);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_MACHINE_H */

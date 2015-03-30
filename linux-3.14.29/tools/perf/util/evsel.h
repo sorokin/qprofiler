@@ -11,6 +11,10 @@
 #include "hist.h"
 #include "symbol.h"
  
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct perf_counts_values {
 	union {
 		struct {
@@ -190,7 +194,7 @@ static inline char *perf_evsel__strval(struct perf_evsel *evsel,
 				       struct perf_sample *sample,
 				       const char *name)
 {
-	return perf_evsel__rawptr(evsel, sample, name);
+	return (char*)perf_evsel__rawptr(evsel, sample, name);
 }
 
 struct format_field;
@@ -338,5 +342,9 @@ static inline int perf_evsel__group_idx(struct perf_evsel *evsel)
 for ((_evsel) = list_entry((_leader)->node.next, struct perf_evsel, node); 	\
      (_evsel) && (_evsel)->leader == (_leader);					\
      (_evsel) = list_entry((_evsel)->node.next, struct perf_evsel, node))
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_EVSEL_H */

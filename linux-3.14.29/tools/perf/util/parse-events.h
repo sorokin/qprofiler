@@ -79,7 +79,7 @@ int parse_events_term__str(struct parse_events_term **_term,
 			   int type_term, char *config, char *str);
 int parse_events_term__sym_hw(struct parse_events_term **term,
 			      char *config, unsigned idx);
-int parse_events_term__clone(struct parse_events_term **new,
+int parse_events_term__clone(struct parse_events_term **new_,
 			     struct parse_events_term *term);
 void parse_events__free_terms(struct list_head *terms);
 int parse_events__modifier_event(struct list_head *list, char *str, bool add);

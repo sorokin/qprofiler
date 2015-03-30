@@ -8,6 +8,10 @@
 #include <stdbool.h>
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum map_type {
 	MAP__FUNCTION = 0,
 	MAP__VARIABLE,
@@ -192,5 +196,9 @@ struct map *map_groups__find_by_name(struct map_groups *mg,
 				     enum map_type type, const char *name);
 
 void map_groups__flush(struct map_groups *mg);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __PERF_MAP_H */
