@@ -12,6 +12,7 @@ struct profile
     profile();
 
     void open(std::string const& filename);
+    void open_perf_data(std::string const& filename);
     void build_tree(MyItem*);
     void build_reverse_tree(MyItem*);
 

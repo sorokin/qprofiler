@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(qprofiler)
 
+add_subdirectory(linux-3.14.29)
+
 set(QT_USE_QTCORE TRUE)
 set(QT_USE_QTGUI TRUE)
 find_package(Qt4 4.6 REQUIRED)
@@ -13,7 +15,8 @@ set(CMAKE_CXX_FLAGS         "-std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g -fsanitize=address,undefined")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g")
 
-include_directories(.)
+include_directories(. ${perf_INCLUDE_DIR})
+add_definitions(${perf_DEFINES})
 
 add_executable(
     qprofiler
@@ -32,6 +35,7 @@ add_executable(
     my_item.cpp
     myitemdelegate.h
     profile.cpp
+    profile_perfdata.cpp
     string_pool.h
     string_pool.cpp
     string_ref.h
@@ -61,4 +65,6 @@ add_executable(
 target_link_libraries(
     qprofiler
     ${QT_LIBRARIES}
+    perf-util
+    -ldw -lslang -liberty -lunwind -lunwind-x86_64 -lpthread -ldl -lm
 )

@@ -51,7 +51,7 @@ MainWindow::~MainWindow()
 void MainWindow::open_file(QString const& file)
 {
     clear_tree();
-    p.open(file.toStdString());
+    p.open_perf_data(file.toStdString());
 
     QSettings settings;
     settings.setValue("opened-file", QVariant(file));
@@ -70,7 +70,7 @@ void MainWindow::closeEvent(QCloseEvent *)
 
 void MainWindow::file_open_action()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Perf Output (*.txt)"));
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Perf Data (*.data)"));
     if (filename.size() != 0)
         open_file(filename);
 }
