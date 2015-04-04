@@ -71,7 +71,7 @@ namespace
     }
 }
 
-void profile::open_perf_data(const std::string &filename)
+void profile::open(const std::string &filename)
 {
     samples.clear();
     if (symbol__init() < 0)

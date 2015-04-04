@@ -43,45 +43,6 @@ bool starts_with(string_ref const& a, char const (&b)[N])
 profile::profile()
 {}
 
-void profile::open(const std::string &filename)
-{
-    samples.clear();
-    std::ifstream f(filename.c_str());
-    if (!f)
-        return;
-
-    std::vector<string_ref> funcs;
-    funcs.reserve(100);
-
-    for (;;)
-    {
-        std::string buf;
-        std::getline(f, buf); // skip header
-        if (!f)
-            return;
-
-        funcs.clear();
-
-        for (;;)
-        {
-            std::getline(f, buf);
-            if (!f)
-                return;
-            if (buf.empty())
-                break;
-
-            string_ref bufref(buf);
-
-            const char* i = std::find_if(bufref.begin(), bufref.end(), &is_not_whitespace);
-            i = std::find_if(i, bufref.end(), &is_whitespace);
-            i = std::find_if(i, bufref.end(), &is_not_whitespace);
-            funcs.push_back(frame_names.put(string_ref(i, bufref.end())));
-        }
-
-        samples.push_back(backtrace(funcs));
-    }
-}
-
 void profile::build_tree(MyItem* root)
 {
     for (auto i = samples.begin(); i != samples.end(); ++i)

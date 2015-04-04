@@ -51,7 +51,7 @@ MainWindow::~MainWindow()
 void MainWindow::open_file(QString const& file)
 {
     clear_tree();
-    p.open_perf_data(file.toStdString());
+    p.open(file.toStdString());
 
     QSettings settings;
     settings.setValue("opened-file", QVariant(file));
