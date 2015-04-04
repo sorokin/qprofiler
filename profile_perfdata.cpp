@@ -113,7 +113,7 @@ void profile::open(const std::string &filename)
                }
                callchain_cursor_commit(&callchain_cursor);
 
-               std::vector<string_ref> funcs;
+               std::vector<frame> funcs;
 
                for (size_t stack_depth = 0; stack_depth != 100; ++stack_depth)
                {
@@ -124,11 +124,7 @@ void profile::open(const std::string &filename)
                        break;
 
                    if (!node->sym || !node->sym->ignore)
-                   {
-                       std::stringstream ss;
-                       ss << get_sym_name(node->sym) << " (" << get_dso_name(node->map) << ")";
-                       funcs.push_back(frame_names.put(ss.str()));
-                   }
+                       funcs.push_back(frame(function_names.put(get_sym_name(node->sym)), dso_names.put(get_dso_name(node->map))));
 
                    callchain_cursor_advance(&callchain_cursor);
                }

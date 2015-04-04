@@ -49,12 +49,12 @@ void profile::build_tree(MyItem* root)
     {
         auto& funcs = i->frames;
         MyItem* c = root;
-        for (std::vector<string_ref>::const_reverse_iterator i = funcs.rbegin(); i != funcs.rend(); ++i)
+        for (auto i = funcs.crbegin(); i != funcs.crend(); ++i)
         {
-            if (i == funcs.rbegin() && starts_with(*i, "[unknown]"))
+            if (i == funcs.rbegin() && starts_with(i->function_name, "[unknown]"))
                 continue;
 
-            c = c->push(i->begin());
+            c = c->push(i->function_name.begin(), i->dso_name.begin());
         }
         c->touch();
     }
@@ -66,14 +66,19 @@ void profile::build_reverse_tree(MyItem* root)
     {
         auto& funcs = i->frames;
         MyItem* c = root;
-        for (std::vector<string_ref>::const_iterator i = funcs.begin(); i != funcs.end(); ++i)
+        for (auto i = funcs.cbegin(); i != funcs.cend(); ++i)
         {
-            c = c->push(i->begin());
+            c = c->push(i->function_name.begin(), i->dso_name.begin());
         }
         c->touch();
     }
 }
 
-profile::backtrace::backtrace(std::vector<string_ref> frames)
+profile::frame::frame(string_ref function_name, string_ref dso_name)
+    : function_name(function_name)
+    , dso_name(dso_name)
+{}
+
+profile::backtrace::backtrace(std::vector<frame> frames)
     : frames(frames)
 {}

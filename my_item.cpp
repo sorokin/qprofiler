@@ -3,10 +3,12 @@
 #include "my_context.h"
 #include "demangle/demangle.h"
 
-MyItem::MyItem(MyContext *ctx, const QString &function_name)
+
+MyItem::MyItem(MyContext *ctx, QString const& function_name, QString const& dso_name)
     : ctx(ctx)
     , hit_number(0)
 {
+    setToolTip(0, dso_name);
     this->setText(CALL_TREE_FUNCTION_COLUMN, function_name);
 }
 
@@ -68,11 +70,11 @@ void MyItem::touch()
     //setText(1, QString::number(hit_number));
 }
 
-MyItem *MyItem::push(const char* function_name)
+MyItem *MyItem::push(const char* function_name, char const* dso_name)
 {
     touch();
 
-    auto i = children.find(function_name);
+    auto i = children.find(key_t(function_name, dso_name));
     if (i == children.end())
     {
         std::string demangled;
@@ -86,8 +88,8 @@ MyItem *MyItem::push(const char* function_name)
             demangled = function_name;
         }
 
-        MyItem* child = new MyItem(ctx, QString::fromStdString(demangled));
-        i = children.insert(i, std::make_pair(function_name, child));
+        MyItem* child = new MyItem(ctx, QString::fromStdString(demangled), QString::fromLocal8Bit(dso_name));
+        i = children.insert(i, std::make_pair(key_t(function_name, dso_name), child));
         this->insertChild(childCount(), child);
         return child;
     }
@@ -96,3 +98,9 @@ MyItem *MyItem::push(const char* function_name)
         return i->second;
     }
 }
+
+
+key::key(const char *first, const char *second)
+    : first(first)
+    , second(second)
+{}

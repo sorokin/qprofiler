@@ -16,14 +16,23 @@ struct profile
     void build_reverse_tree(MyItem*);
 
 private:
-    struct backtrace
+    struct frame
     {
-        backtrace(std::vector<string_ref> frames);
+        frame(string_ref function_name, string_ref dso_name);
 
-        std::vector<string_ref> frames;
+        string_ref function_name;
+        string_ref dso_name;
     };
 
-    string_pool frame_names;
+    struct backtrace
+    {
+        backtrace(std::vector<frame> frames);
+
+        std::vector<frame> frames;
+    };
+
+    string_pool function_names;
+    string_pool dso_names;
     std::vector<backtrace> samples;
 };
 

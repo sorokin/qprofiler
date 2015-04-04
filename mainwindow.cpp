@@ -98,7 +98,7 @@ void MainWindow::clear_tree()
 {
     ui->treeWidget->clear();
     ctx.set_root(0);
-    MyItem* root = new MyItem(&ctx, "<root>");
+    MyItem* root = new MyItem(&ctx, "<root>", "<no module>");
     ctx.set_root(root);
 }
 
