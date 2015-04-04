@@ -137,7 +137,7 @@ extern char **vmlinux_path;
 
 static inline void *symbol__priv(struct symbol *sym)
 {
-	return ((void *)sym) - symbol_conf.priv_size;
+	return ((char *)sym) - symbol_conf.priv_size;
 }
 
 struct ref_reloc_sym {
