@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "string_ref.h"
+#include "profile.h"
 
 struct MyContext;
 
@@ -53,14 +54,13 @@ struct MyItem : QTreeWidgetItem
 
     void touch();
 
-    MyItem* push(const char* function_name, char const* dso_name);
+    MyItem* push(profile* p, profile::frame_index_type findex);
 
 private:
     MyContext* ctx;
     size_t hit_number;
 
-    typedef key key_t;
-    std::unordered_map<key_t, MyItem*, key_hash_value, key_compare> children;
+    std::unordered_map<profile::frame_index_type, MyItem*, profile::frame_index_type::hash> children;
 };
 
 #endif // MY_ITEM_H

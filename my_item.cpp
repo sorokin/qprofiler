@@ -70,26 +70,27 @@ void MyItem::touch()
     //setText(1, QString::number(hit_number));
 }
 
-MyItem *MyItem::push(const char* function_name, char const* dso_name)
+MyItem *MyItem::push(profile* p, profile::frame_index_type findex)
 {
     touch();
 
-    auto i = children.find(key_t(function_name, dso_name));
+    auto i = children.find(findex);
     if (i == children.end())
     {
+        profile::frame const& frame = p->get_frame(findex);
         std::string demangled;
         try
         {
-            demangling_result res = demangle(string_ref(function_name, function_name + strlen(function_name)));
+            demangling_result res = demangle(frame.function_name);
             demangled = std::move(res.demangled);
         }
         catch (demangling_error const&)
         {
-            demangled = function_name;
+            demangled = frame.function_name.begin();
         }
 
-        MyItem* child = new MyItem(ctx, QString::fromStdString(demangled), QString::fromLocal8Bit(dso_name));
-        i = children.insert(i, std::make_pair(key_t(function_name, dso_name), child));
+        MyItem* child = new MyItem(ctx, QString::fromStdString(demangled), QString::fromLocal8Bit(frame.dso_name.begin()));
+        i = children.insert(i, std::make_pair(findex, child));
         this->insertChild(childCount(), child);
         return child;
     }

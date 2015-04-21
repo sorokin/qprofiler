@@ -21,6 +21,8 @@ private:
 
 struct string_ref_value_hash
 {
+    typedef string_ref argument_type;
+
     size_t operator()(string_ref const& a) const;
 };
 

@@ -51,10 +51,10 @@ void profile::build_tree(MyItem* root)
         MyItem* c = root;
         for (auto i = funcs.crbegin(); i != funcs.crend(); ++i)
         {
-            if (i == funcs.rbegin() && starts_with(i->function_name, "[unknown]"))
+            if (i == funcs.rbegin() && starts_with(frame_pool[*i].function_name, "[unknown]"))
                 continue;
 
-            c = c->push(i->function_name.begin(), i->dso_name.begin());
+            c = c->push(this, *i);
         }
         c->touch();
     }
@@ -68,10 +68,15 @@ void profile::build_reverse_tree(MyItem* root)
         MyItem* c = root;
         for (auto i = funcs.cbegin(); i != funcs.cend(); ++i)
         {
-            c = c->push(i->function_name.begin(), i->dso_name.begin());
+            c = c->push(this, *i);
         }
         c->touch();
     }
+}
+
+const profile::frame &profile::get_frame(profile::frame_index_type index)
+{
+    return frame_pool[index];
 }
 
 profile::frame::frame(string_ref function_name, string_ref dso_name)
@@ -79,6 +84,7 @@ profile::frame::frame(string_ref function_name, string_ref dso_name)
     , dso_name(dso_name)
 {}
 
-profile::backtrace::backtrace(std::vector<frame> frames)
-    : frames(frames)
+profile::backtrace::backtrace(std::vector<frame_index_type> frames)
+    : frames(std::move(frames))
 {}
+

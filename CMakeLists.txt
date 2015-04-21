@@ -40,6 +40,11 @@ add_executable(
     string_pool.cpp
     string_ref.h
     string_ref.cpp
+    object_pool.h
+    object_pool.cpp
+    tuple_hash.h
+    tuple_equals.h
+    type_list.h
     demangle/demangle.h
     demangle/demangle.cpp
 )

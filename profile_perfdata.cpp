@@ -85,7 +85,11 @@ void profile::open(const std::string &filename)
     if (!session)
         throw std::runtime_error("failed to open file");
 
-    process_events(session, [this](perf_event *event,
+    frame_pool_type::builder<type_list<string_ref, string_ref>,
+                             type_list<string_ref_value_hash, string_ref_value_hash>,
+                             type_list<string_ref_value_compare, string_ref_value_compare> > frame_builder(frame_pool);
+
+    process_events(session, [this, &frame_builder](perf_event *event,
                    perf_sample *sample,
                    perf_evsel *evsel, machine *machine) -> int
        {
@@ -113,7 +117,7 @@ void profile::open(const std::string &filename)
                }
                callchain_cursor_commit(&callchain_cursor);
 
-               std::vector<frame> funcs;
+               std::vector<frame_index_type> funcs;
 
                for (size_t stack_depth = 0; stack_depth != 100; ++stack_depth)
                {
@@ -124,7 +128,10 @@ void profile::open(const std::string &filename)
                        break;
 
                    if (!node->sym || !node->sym->ignore)
-                       funcs.push_back(frame(function_names.put(get_sym_name(node->sym)), dso_names.put(get_dso_name(node->map))));
+                   {
+                       frame_index_type findex = frame_builder.emplace(function_names.put(get_sym_name(node->sym)), dso_names.put(get_dso_name(node->map)));
+                       funcs.push_back(findex);
+                   }
 
                    callchain_cursor_advance(&callchain_cursor);
                }
