@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "string_pool.h"
 #include "object_pool.h"
 
@@ -21,12 +22,14 @@ struct profile
     typedef size_t frame_index_underlying_type;
     typedef object_pool<frame, frame_index_underlying_type> frame_pool_type;
     typedef typename frame_pool_type::index_type frame_index_type;
+    static constexpr frame_index_type invalid_frame_index = frame_index_type(std::numeric_limits<frame_index_underlying_type>::max());
 
     profile();
 
     void open(std::string const& filename);
     void build_tree(MyItem*);
     void build_reverse_tree(MyItem*);
+    void build_tree_function(MyItem*, frame_index_type index);
 
     frame const& get_frame(frame_index_type index);
 

@@ -3,6 +3,17 @@
 #include <fstream>
 #include "my_item.h"
 
+namespace
+{
+    template <typename ForwardIterator>
+    void insert_trace(profile* p, MyItem* c, ForwardIterator first, ForwardIterator last)
+    {
+        for (auto i = first; i != last; ++i)
+            c = c->push(p, *i);
+        c->touch();
+    }
+}
+
 bool is_whitespace(char c)
 {
     return c <= ' ';
@@ -48,15 +59,11 @@ void profile::build_tree(MyItem* root)
     for (auto i = samples.begin(); i != samples.end(); ++i)
     {
         auto& funcs = i->frames;
-        MyItem* c = root;
-        for (auto i = funcs.crbegin(); i != funcs.crend(); ++i)
-        {
-            if (i == funcs.rbegin() && starts_with(frame_pool[*i].function_name, "[unknown]"))
-                continue;
+        auto j = funcs.crbegin();
+        if (j != funcs.crend() && starts_with(frame_pool[*j].function_name, "[unknown]"))
+            ++j;
 
-            c = c->push(this, *i);
-        }
-        c->touch();
+        insert_trace(this, root, j, funcs.crend());
     }
 }
 
@@ -65,16 +72,21 @@ void profile::build_reverse_tree(MyItem* root)
     for (auto i = samples.begin(); i != samples.end(); ++i)
     {
         auto& funcs = i->frames;
-        MyItem* c = root;
-        for (auto i = funcs.cbegin(); i != funcs.cend(); ++i)
-        {
-            c = c->push(this, *i);
-        }
-        c->touch();
+        insert_trace(this, root, funcs.cbegin(), funcs.cend());
     }
 }
 
-const profile::frame &profile::get_frame(profile::frame_index_type index)
+void profile::build_tree_function(MyItem* root, frame_index_type index)
+{
+    for (auto i = samples.begin(); i != samples.end(); ++i)
+    {
+        auto& funcs = i->frames;
+        auto j = std::find(funcs.crbegin(), funcs.crend(), index);
+        insert_trace(this, root, j, funcs.crend());
+    }
+}
+
+const profile::frame &profile::get_frame(frame_index_type index)
 {
     return frame_pool[index];
 }
@@ -88,3 +100,4 @@ profile::backtrace::backtrace(std::vector<frame_index_type> frames)
     : frames(std::move(frames))
 {}
 
+constexpr profile::frame_index_type profile::invalid_frame_index;

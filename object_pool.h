@@ -30,7 +30,7 @@ struct object_pool
     {
         typedef object_pool_index_hash<T, Index> hash;
 
-        explicit index_type(Index val)
+        explicit constexpr index_type(Index val)
             : val(val)
         {}
 

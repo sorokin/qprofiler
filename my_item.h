@@ -42,15 +42,18 @@ struct key_compare
 
 struct MyItem : QTreeWidgetItem
 {
-    MyItem(MyContext* ctx, QString const& function_name, QString const& dso_name);
+    MyItem(MyContext* ctx, profile::frame_index_type findex, QString const& function_name, QString const& dso_name);
 
     void update_percentage();
     void expand_all_greater_than(QTreeWidget* widget, size_t limit);
     void expand_all(QTreeWidget* widget);
 
-    size_t hits();
+    profile::frame_index_type frame_index() const;
+    size_t self_hits() const;
+    size_t hits() const;
 
-    double percentage();
+    double self_percentage() const;
+    double percentage() const;
 
     void touch();
 
@@ -58,6 +61,8 @@ struct MyItem : QTreeWidgetItem
 
 private:
     MyContext* ctx;
+    profile::frame_index_type findex;
+    size_t self_hit_number;
     size_t hit_number;
 
     std::unordered_map<profile::frame_index_type, MyItem*, profile::frame_index_type::hash> children;

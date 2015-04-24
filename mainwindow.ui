@@ -35,6 +35,16 @@
         <string>Percentage</string>
        </property>
       </column>
+      <column>
+       <property name="text">
+        <string>Self Samples Count</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Self Percentage</string>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>

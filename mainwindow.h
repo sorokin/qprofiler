@@ -26,6 +26,8 @@ private slots:
     void view_call_tree();
     void view_reverse_call_tree();
 
+    void show_context_menu(QPoint const&);
+
 private:
     void clear_tree();
     void show_tree();

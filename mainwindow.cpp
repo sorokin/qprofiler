@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeWidget->header()->setStretchLastSection(false);
     ui->treeWidget->sortByColumn(1, Qt::DescendingOrder);
 
+    ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), SLOT(show_context_menu(QPoint)));
+
     {
         QSettings settings;
         restoreGeometry(settings.value("main-window-geometry").toByteArray());
@@ -94,11 +97,33 @@ void MainWindow::view_reverse_call_tree()
     show_tree();
 }
 
+void MainWindow::show_context_menu(QPoint const& point)
+{
+    QTreeWidgetItem* item = ui->treeWidget->itemAt(point);
+    if (!item)
+        return;
+
+    QMenu menu;
+    QAction* show_function = menu.addAction("All Instances");
+    QAction* selected = menu.exec(ui->treeWidget->viewport()->mapToGlobal(point));
+    if (selected == show_function)
+    {
+        MyItem* citem = static_cast<MyItem*>(item);
+        profile::frame_index_type findex = citem->frame_index();
+        if (findex == profile::invalid_frame_index)
+            return;
+
+        clear_tree();
+        p.build_tree_function(ctx.get_root(), findex);
+        show_tree();
+    }
+}
+
 void MainWindow::clear_tree()
 {
     ui->treeWidget->clear();
     ctx.set_root(0);
-    MyItem* root = new MyItem(&ctx, "<root>", "<no module>");
+    MyItem* root = new MyItem(&ctx, profile::invalid_frame_index, "<root>", "<no module>");
     ctx.set_root(root);
 }
 
