@@ -9,3 +9,5 @@ moc_myitemdelegate.cxx
 moc_myitemdelegate.cxx_parameters
 qprofiler
 qprofiler.cbp
+ui_mainwindow.h
+
