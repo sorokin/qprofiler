@@ -27,11 +27,15 @@ private slots:
     void view_call_tree();
     void view_reverse_call_tree();
     void view_all_instances();
+    void undo();
 
     void show_context_menu(QPoint const&);
     void selection_changed();
 
 private:
+    std::vector<profile::frame_index_type> get_selected_frames() const;
+    void update_undo();
+    void refresh_tree();
     void clear_tree();
     void show_tree();
 
@@ -40,6 +44,7 @@ private:
     MyContext ctx;
     profile p;
     transformation trs;
+    std::vector<transformation> undo_stack;
 };
 
 #endif // MAINWINDOW_H

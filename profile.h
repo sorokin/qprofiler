@@ -29,9 +29,6 @@ struct profile
     profile();
 
     void open(std::string const& filename);
-    void build_tree(MyItem*);
-    void build_reverse_tree(MyItem*);
-    void build_tree_function(MyItem*, frame_index_type index);
     template <typename ForwardIterator>
     void insert_range(MyItem*, ForwardIterator first, ForwardIterator last);
     template <typename ForwardIterator>

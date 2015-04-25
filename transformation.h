@@ -13,8 +13,11 @@ struct transformation
         backward,
     };
 
+    typedef std::unordered_set<profile::frame_index_type, profile::frame_index_type::hash> frames_set;
+    typedef std::vector<frames_set> roots_type;
+
     direction_type direction = direction_type::forward;
-    std::unordered_set<profile::frame_index_type, profile::frame_index_type::hash> roots;
+    roots_type roots;
 };
 
 #endif

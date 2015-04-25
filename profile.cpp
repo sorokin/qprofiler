@@ -46,28 +46,6 @@ bool starts_with(string_ref const& a, char const (&b)[N])
 profile::profile()
 {}
 
-void profile::build_tree(MyItem* root)
-{
-    transformation tr;
-    tr.direction = transformation::direction_type::forward;
-    build_tree(root, tr);
-}
-
-void profile::build_reverse_tree(MyItem* root)
-{
-    transformation tr;
-    tr.direction = transformation::direction_type::backward;
-    build_tree(root, tr);
-}
-
-void profile::build_tree_function(MyItem* root, frame_index_type index)
-{
-    transformation tr;
-    tr.direction = transformation::direction_type::forward;
-    tr.roots.insert(index);
-    build_tree(root, tr);
-}
-
 template <typename ForwardIterator>
 void profile::insert_range(MyItem* c, ForwardIterator first, ForwardIterator last)
 {
@@ -79,25 +57,12 @@ void profile::insert_range(MyItem* c, ForwardIterator first, ForwardIterator las
 template <typename ForwardIterator>
 void profile::insert_trace(MyItem* root, ForwardIterator first, ForwardIterator last, transformation const& tr)
 {
-    ForwardIterator i;
-    if (tr.roots.empty())
-        i = first;
-    else
+    ForwardIterator i = first;
+    for (auto j = tr.roots.cbegin(); j != tr.roots.cend(); ++j)
     {
-        i = std::find_if(first, last, [&tr](frame_index_type index) {
-           return tr.roots.find(index) != tr.roots.end();
+        i = std::find_if(i, last, [&tr, j](frame_index_type index) {
+           return j->find(index) != j->end();
         });
-/*
-        i = last;
-        for (;;)
-        {
-            if (i == first)
-                break;
-
-            --i;
-            if (tr.roots.find(*i) != tr.roots.end())
-                break;
-        }*/
     }
 
     insert_range(root, i, last);

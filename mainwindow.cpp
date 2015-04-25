@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), SLOT(show_context_menu(QPoint)));
+    connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     {
         QSettings settings;
@@ -41,10 +42,14 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(file_open_action()));
+    connect(ui->actionUndo, SIGNAL(triggered()), SLOT(undo()));
     connect(ui->actionExpand_All, SIGNAL(triggered()), SLOT(edit_expand_all_action()));
     connect(ui->actionCall_Tree, SIGNAL(triggered()), SLOT(view_call_tree()));
     connect(ui->actionReverse_Call_Tree, SIGNAL(triggered()), SLOT(view_reverse_call_tree()));
     connect(ui->actionAll_Instances, SIGNAL(triggered()), SLOT(view_all_instances()));
+
+    selection_changed();
+    update_undo();
 }
 
 MainWindow::~MainWindow()
@@ -61,8 +66,7 @@ void MainWindow::open_file(QString const& file)
     settings.setValue("opened-file", QVariant(file));
     this->setWindowTitle(QString("%1 - QProfiler").arg(file));
 
-    p.build_tree(ctx.get_root());
-    show_tree();
+    refresh_tree();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -86,45 +90,51 @@ void MainWindow::edit_expand_all_action()
 
 void MainWindow::view_call_tree()
 {
+    undo_stack.clear();
+    update_undo();
     trs.direction = transformation::direction_type::forward;
     trs.roots.clear();
-    clear_tree();
-    p.build_tree(ctx.get_root(), trs);
-    show_tree();
+    refresh_tree();
 }
 
 void MainWindow::view_reverse_call_tree()
 {
+    undo_stack.clear();
+    update_undo();
     trs.direction = transformation::direction_type::backward;
     trs.roots.clear();
-    clear_tree();
-    p.build_tree(ctx.get_root(), trs);
-    show_tree();
+    refresh_tree();
 }
 
 void MainWindow::view_all_instances()
 {
-    QList<QTreeWidgetItem*> selected_items = ui->treeWidget->selectedItems();
+    auto selected_frames = get_selected_frames();
 
-    if (selected_items.empty())
+    if (selected_frames.empty())
     {
         assert(false);
         return;
     }
 
-    trs.roots.clear();
-    for (auto i = selected_items.begin(); i != selected_items.end(); ++i)
+    undo_stack.push_back(trs);
+    update_undo();
+    trs.roots.push_back(transformation::frames_set(selected_frames.begin(), selected_frames.end()));
+
+    refresh_tree();
+}
+
+void MainWindow::undo()
+{
+    if (undo_stack.empty())
     {
-        MyItem* citem = static_cast<MyItem*>(*i);
-        profile::frame_index_type findex = citem->frame_index();
-        if (findex == profile::invalid_frame_index)
-            continue;
-        trs.roots.insert(citem->frame_index());
+        assert(false);
+        return;
     }
 
-    clear_tree();
-    p.build_tree(ctx.get_root(), trs);
-    show_tree();
+    trs = std::move(undo_stack.back());
+    undo_stack.pop_back();
+    update_undo();
+    refresh_tree();
 }
 
 void MainWindow::show_context_menu(QPoint const& point)
@@ -136,8 +146,36 @@ void MainWindow::show_context_menu(QPoint const& point)
 
 void MainWindow::selection_changed()
 {
+    ui->actionAll_Instances->setEnabled(!get_selected_frames().empty());
+}
+
+std::vector<profile::frame_index_type> MainWindow::get_selected_frames() const
+{
+    std::vector<profile::frame_index_type> result;
+
     QList<QTreeWidgetItem*> selected_items = ui->treeWidget->selectedItems();
-    ui->actionAll_Instances->setEnabled(!selected_items.empty());
+    for (auto i = selected_items.begin(); i != selected_items.end(); ++i)
+    {
+        MyItem* citem = static_cast<MyItem*>(*i);
+        profile::frame_index_type findex = citem->frame_index();
+        if (findex == profile::invalid_frame_index)
+            continue;
+        result.push_back(citem->frame_index());
+    }
+
+    return result;
+}
+
+void MainWindow::update_undo()
+{
+    ui->actionUndo->setEnabled(!undo_stack.empty());
+}
+
+void MainWindow::refresh_tree()
+{
+    clear_tree();
+    p.build_tree(ctx.get_root(), trs);
+    show_tree();
 }
 
 void MainWindow::clear_tree()
