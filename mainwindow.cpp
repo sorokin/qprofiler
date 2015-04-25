@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExpand_All, SIGNAL(triggered()), SLOT(edit_expand_all_action()));
     connect(ui->actionCall_Tree, SIGNAL(triggered()), SLOT(view_call_tree()));
     connect(ui->actionReverse_Call_Tree, SIGNAL(triggered()), SLOT(view_reverse_call_tree()));
+    connect(ui->actionAll_Instances, SIGNAL(triggered()), SLOT(view_all_instances()));
 }
 
 MainWindow::~MainWindow()
@@ -85,38 +86,57 @@ void MainWindow::edit_expand_all_action()
 
 void MainWindow::view_call_tree()
 {
+    trs.direction = transformation::direction_type::forward;
+    trs.roots.clear();
     clear_tree();
-    p.build_tree(ctx.get_root());
+    p.build_tree(ctx.get_root(), trs);
     show_tree();
 }
 
 void MainWindow::view_reverse_call_tree()
 {
+    trs.direction = transformation::direction_type::backward;
+    trs.roots.clear();
     clear_tree();
-    p.build_reverse_tree(ctx.get_root());
+    p.build_tree(ctx.get_root(), trs);
+    show_tree();
+}
+
+void MainWindow::view_all_instances()
+{
+    QList<QTreeWidgetItem*> selected_items = ui->treeWidget->selectedItems();
+
+    if (selected_items.empty())
+    {
+        assert(false);
+        return;
+    }
+
+    for (auto i = selected_items.begin(); i != selected_items.end(); ++i)
+    {
+        MyItem* citem = static_cast<MyItem*>(*i);
+        profile::frame_index_type findex = citem->frame_index();
+        if (findex == profile::invalid_frame_index)
+            continue;
+        trs.roots.insert(citem->frame_index());
+    }
+
+    clear_tree();
+    p.build_tree(ctx.get_root(), trs);
     show_tree();
 }
 
 void MainWindow::show_context_menu(QPoint const& point)
 {
-    QTreeWidgetItem* item = ui->treeWidget->itemAt(point);
-    if (!item)
-        return;
-
     QMenu menu;
-    QAction* show_function = menu.addAction("All Instances");
-    QAction* selected = menu.exec(ui->treeWidget->viewport()->mapToGlobal(point));
-    if (selected == show_function)
-    {
-        MyItem* citem = static_cast<MyItem*>(item);
-        profile::frame_index_type findex = citem->frame_index();
-        if (findex == profile::invalid_frame_index)
-            return;
+    menu.addAction(ui->actionAll_Instances);
+    menu.exec(ui->treeWidget->viewport()->mapToGlobal(point));
+}
 
-        clear_tree();
-        p.build_tree_function(ctx.get_root(), findex);
-        show_tree();
-    }
+void MainWindow::selection_changed()
+{
+    QList<QTreeWidgetItem*> selected_items = ui->treeWidget->selectedItems();
+    ui->actionAll_Instances->setEnabled(!selected_items.empty());
 }
 
 void MainWindow::clear_tree()

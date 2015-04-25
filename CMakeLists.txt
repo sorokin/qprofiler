@@ -45,6 +45,8 @@ add_executable(
     tuple_hash.h
     tuple_equals.h
     type_list.h
+    transformation.h
+    transformation.cpp
     demangle/demangle.h
     demangle/demangle.cpp
 )

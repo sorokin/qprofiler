@@ -9,6 +9,8 @@
 
 struct MyItem;
 
+struct transformation;
+
 struct profile
 {
     struct frame
@@ -30,6 +32,11 @@ struct profile
     void build_tree(MyItem*);
     void build_reverse_tree(MyItem*);
     void build_tree_function(MyItem*, frame_index_type index);
+    template <typename ForwardIterator>
+    void insert_range(MyItem*, ForwardIterator first, ForwardIterator last);
+    template <typename ForwardIterator>
+    void insert_trace(MyItem*, ForwardIterator first, ForwardIterator last, transformation const&);
+    void build_tree(MyItem*, transformation const&);
 
     frame const& get_frame(frame_index_type index);
 

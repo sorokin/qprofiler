@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "my_context.h"
 #include "profile.h"
+#include "transformation.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,8 +26,10 @@ private slots:
     void edit_expand_all_action();
     void view_call_tree();
     void view_reverse_call_tree();
+    void view_all_instances();
 
     void show_context_menu(QPoint const&);
+    void selection_changed();
 
 private:
     void clear_tree();
@@ -36,6 +39,7 @@ private:
     Ui::MainWindow *ui;
     MyContext ctx;
     profile p;
+    transformation trs;
 };
 
 #endif // MAINWINDOW_H
