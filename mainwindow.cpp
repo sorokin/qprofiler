@@ -112,6 +112,7 @@ void MainWindow::view_all_instances()
         return;
     }
 
+    trs.roots.clear();
     for (auto i = selected_items.begin(); i != selected_items.end(); ++i)
     {
         MyItem* citem = static_cast<MyItem*>(*i);
