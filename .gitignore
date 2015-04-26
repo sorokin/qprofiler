@@ -10,4 +10,8 @@ moc_my_item_delegate.cxx_parameters
 qprofiler
 qprofiler.cbp
 ui_mainwindow.h
+demangle_app
+demangle_test
+linux-3.14.29/libperf-util.a
+linux-3.14.29/perf
 
