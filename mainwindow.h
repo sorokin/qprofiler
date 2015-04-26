@@ -29,11 +29,13 @@ private slots:
     void view_reverse_call_tree();
     void view_all_instances();
     void undo();
+    void redo();
 
     void show_context_menu(QPoint const&);
     void selection_changed();
 
 private:
+    void undo_redo(::undo_stack<transformation>::action_type action);
     std::vector<profile::frame_index_type> get_selected_frames() const;
     void update_undo();
     void refresh_tree();

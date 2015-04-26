@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionOpen, SIGNAL(triggered()), SLOT(file_open_action()));
     connect(ui->actionUndo, SIGNAL(triggered()), SLOT(undo()));
+    connect(ui->actionRedo, SIGNAL(triggered()), SLOT(redo()));
     connect(ui->actionExpand_All, SIGNAL(triggered()), SLOT(edit_expand_all_action()));
     connect(ui->actionCall_Tree, SIGNAL(triggered()), SLOT(view_call_tree()));
     connect(ui->actionReverse_Call_Tree, SIGNAL(triggered()), SLOT(view_reverse_call_tree()));
@@ -130,16 +131,12 @@ void MainWindow::view_all_instances()
 
 void MainWindow::undo()
 {
-    if (!undo_stack.can_undo(::undo_stack<transformation>::action_type::undo))
-    {
-        assert(false);
-        return;
-    }
+    undo_redo(::undo_stack<transformation>::action_type::undo);
+}
 
-    transformation trs = undo_stack.peek_undo_item(::undo_stack<transformation>::action_type::undo);
-    undo_stack.undo(::undo_stack<transformation>::action_type::undo);
-    update_undo();
-    refresh_tree();
+void MainWindow::redo()
+{
+    undo_redo(::undo_stack<transformation>::action_type::redo);
 }
 
 void MainWindow::show_context_menu(QPoint const& point)
@@ -152,6 +149,20 @@ void MainWindow::show_context_menu(QPoint const& point)
 void MainWindow::selection_changed()
 {
     ui->actionAll_Instances->setEnabled(!get_selected_frames().empty());
+}
+
+void MainWindow::undo_redo(::undo_stack<transformation>::action_type action)
+{
+    if (!undo_stack.can_undo(action))
+    {
+        assert(false);
+        return;
+    }
+
+    transformation trs = undo_stack.peek_undo_item(action);
+    undo_stack.undo(action);
+    update_undo();
+    refresh_tree();
 }
 
 std::vector<profile::frame_index_type> MainWindow::get_selected_frames() const
@@ -174,6 +185,7 @@ std::vector<profile::frame_index_type> MainWindow::get_selected_frames() const
 void MainWindow::update_undo()
 {
     ui->actionUndo->setEnabled(undo_stack.can_undo(::undo_stack<transformation>::action_type::undo));
+    ui->actionRedo->setEnabled(undo_stack.can_undo(::undo_stack<transformation>::action_type::redo));
 }
 
 void MainWindow::refresh_tree()
