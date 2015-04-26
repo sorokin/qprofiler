@@ -90,19 +90,23 @@ void MainWindow::edit_expand_all_action()
 
 void MainWindow::view_call_tree()
 {
-    undo_stack.clear();
-    update_undo();
+    transformation trs;
     trs.direction = transformation::direction_type::forward;
     trs.roots.clear();
+    undo_stack.reset(std::move(trs));
+    update_undo();
+
     refresh_tree();
 }
 
 void MainWindow::view_reverse_call_tree()
 {
-    undo_stack.clear();
-    update_undo();
+    transformation trs;
     trs.direction = transformation::direction_type::backward;
     trs.roots.clear();
+    undo_stack.reset(trs);
+    update_undo();
+
     refresh_tree();
 }
 
@@ -116,23 +120,24 @@ void MainWindow::view_all_instances()
         return;
     }
 
-    undo_stack.push_back(trs);
-    update_undo();
+    transformation trs = undo_stack.current();
     trs.roots.push_back(transformation::frames_set(selected_frames.begin(), selected_frames.end()));
+    undo_stack.push(std::move(trs));
+    update_undo();
 
     refresh_tree();
 }
 
 void MainWindow::undo()
 {
-    if (undo_stack.empty())
+    if (!undo_stack.can_undo(::undo_stack<transformation>::action_type::undo))
     {
         assert(false);
         return;
     }
 
-    trs = std::move(undo_stack.back());
-    undo_stack.pop_back();
+    transformation trs = undo_stack.peek_undo_item(::undo_stack<transformation>::action_type::undo);
+    undo_stack.undo(::undo_stack<transformation>::action_type::undo);
     update_undo();
     refresh_tree();
 }
@@ -168,13 +173,13 @@ std::vector<profile::frame_index_type> MainWindow::get_selected_frames() const
 
 void MainWindow::update_undo()
 {
-    ui->actionUndo->setEnabled(!undo_stack.empty());
+    ui->actionUndo->setEnabled(undo_stack.can_undo(::undo_stack<transformation>::action_type::undo));
 }
 
 void MainWindow::refresh_tree()
 {
     clear_tree();
-    p.build_tree(ctx.get_root(), trs);
+    p.build_tree(ctx.get_root(), undo_stack.current());
     show_tree();
 }
 

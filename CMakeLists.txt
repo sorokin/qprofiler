@@ -47,6 +47,7 @@ add_executable(
     type_list.h
     transformation.h
     transformation.cpp
+    undo_stack.h
     demangle/demangle.h
     demangle/demangle.cpp
 )

@@ -5,6 +5,7 @@
 #include "my_context.h"
 #include "profile.h"
 #include "transformation.h"
+#include "undo_stack.h"
 
 namespace Ui {
 class MainWindow;
@@ -43,8 +44,7 @@ private:
     Ui::MainWindow *ui;
     MyContext ctx;
     profile p;
-    transformation trs;
-    std::vector<transformation> undo_stack;
+    ::undo_stack<transformation> undo_stack;
 };
 
 #endif // MAINWINDOW_H
