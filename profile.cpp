@@ -51,7 +51,6 @@ void profile::insert_range(my_item* c, ForwardIterator first, ForwardIterator la
 {
     for (auto i = first; i != last; ++i)
         c = c->push(this, *i);
-    c->touch();
 }
 
 template <typename ForwardIterator>
@@ -63,6 +62,9 @@ void profile::insert_trace(my_item* root, ForwardIterator first, ForwardIterator
         i = std::find_if(i, last, [&tr, j](frame_index_type index) {
            return j->find(index) != j->end();
         });
+
+        if (i == last)
+            return;
     }
 
     insert_range(root, i, last);
