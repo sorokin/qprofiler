@@ -9,7 +9,7 @@ find_package(Qt4 4.6 REQUIRED)
 include(${QT_USE_FILE})
 
 qt4_wrap_ui(UI_FILES mainwindow.ui)
-qt4_wrap_cpp(MOC_FILES mainwindow.h myitemdelegate.h)
+qt4_wrap_cpp(MOC_FILES mainwindow.h my_item_delegate.h)
 
 set(CMAKE_CXX_FLAGS         "-std=c++11")
 set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g -fsanitize=address,undefined")
@@ -26,14 +26,14 @@ add_executable(
     main.cpp
     mainwindow.h
     my_context.h
-    myitemdelegate.cpp
+    my_item_delegate.cpp
     my_item.h
     profile.h
     call_tree_column.h
     mainwindow.cpp
     my_context.cpp
     my_item.cpp
-    myitemdelegate.h
+    my_item_delegate.h
     profile.cpp
     profile_perfdata.cpp
     string_pool.h

@@ -4,7 +4,7 @@
 #include "demangle/demangle.h"
 
 
-MyItem::MyItem(MyContext *ctx, profile::frame_index_type findex, QString const& function_name, QString const& dso_name)
+my_item::my_item(MyContext *ctx, profile::frame_index_type findex, QString const& function_name, QString const& dso_name)
     : ctx(ctx)
     , findex(findex)
     , self_hit_number(0)
@@ -14,7 +14,7 @@ MyItem::MyItem(MyContext *ctx, profile::frame_index_type findex, QString const& 
     this->setText(CALL_TREE_FUNCTION_COLUMN, function_name);
 }
 
-void MyItem::update_percentage()
+void my_item::update_percentage()
 {
     setData(CALL_TREE_SAMPLES_COLUMN, 0, QVariant((int)hit_number));
     setTextAlignment(CALL_TREE_SAMPLES_COLUMN, Qt::AlignRight);
@@ -37,7 +37,7 @@ void MyItem::update_percentage()
     }
 }
 
-void MyItem::expand_all_greater_than(QTreeWidget *widget, size_t limit)
+void my_item::expand_all_greater_than(QTreeWidget *widget, size_t limit)
 {
     if (hit_number <= limit)
         return;
@@ -48,7 +48,7 @@ void MyItem::expand_all_greater_than(QTreeWidget *widget, size_t limit)
     }
 }
 
-void MyItem::expand_all(QTreeWidget *widget)
+void my_item::expand_all(QTreeWidget *widget)
 {
     widget->expandItem(this);
     for (auto i = children.cbegin(); i != children.cend(); ++i)
@@ -57,22 +57,22 @@ void MyItem::expand_all(QTreeWidget *widget)
     }
 }
 
-profile::frame_index_type MyItem::frame_index() const
+profile::frame_index_type my_item::frame_index() const
 {
     return findex;
 }
 
-size_t MyItem::self_hits() const
+size_t my_item::self_hits() const
 {
     return self_hit_number;
 }
 
-size_t MyItem::hits() const
+size_t my_item::hits() const
 {
     return hit_number;
 }
 
-double MyItem::self_percentage() const
+double my_item::self_percentage() const
 {
     size_t total = ctx->total_hits();
     if (total == 0)
@@ -80,7 +80,7 @@ double MyItem::self_percentage() const
     return 100. * self_hit_number / total;
 }
 
-double MyItem::percentage() const
+double my_item::percentage() const
 {
     size_t total = ctx->total_hits();
     if (total == 0)
@@ -88,14 +88,14 @@ double MyItem::percentage() const
     return 100. * hit_number / total;
 }
 
-void MyItem::touch()
+void my_item::touch()
 {
     ++self_hit_number;
     ++hit_number;
     //setText(1, QString::number(hit_number));
 }
 
-MyItem *MyItem::push(profile* p, profile::frame_index_type findex)
+my_item *my_item::push(profile* p, profile::frame_index_type findex)
 {
     ++hit_number;
 
@@ -114,7 +114,7 @@ MyItem *MyItem::push(profile* p, profile::frame_index_type findex)
             demangled = frame.function_name.begin();
         }
 
-        MyItem* child = new MyItem(ctx, findex, QString::fromStdString(demangled), QString::fromLocal8Bit(frame.dso_name.begin()));
+        my_item* child = new my_item(ctx, findex, QString::fromStdString(demangled), QString::fromLocal8Bit(frame.dso_name.begin()));
         i = children.insert(i, std::make_pair(findex, child));
         this->insertChild(childCount(), child);
         return child;

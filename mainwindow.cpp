@@ -10,7 +10,7 @@
 #include <QSettings>
 #include <QFileDialog>
 
-#include "myitemdelegate.h"
+#include "my_item_delegate.h"
 #include "call_tree_column.h"
 #include "benchmark_mode.h"
 #include "my_item.h"
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->treeWidget->setItemDelegate(new MyItemDelegate);
+    ui->treeWidget->setItemDelegate(new my_item_delegate);
     ui->treeWidget->header()->resizeSection(0, 900);
     ui->treeWidget->header()->setStretchLastSection(false);
     ui->treeWidget->sortByColumn(1, Qt::DescendingOrder);
@@ -156,7 +156,7 @@ std::vector<profile::frame_index_type> MainWindow::get_selected_frames() const
     QList<QTreeWidgetItem*> selected_items = ui->treeWidget->selectedItems();
     for (auto i = selected_items.begin(); i != selected_items.end(); ++i)
     {
-        MyItem* citem = static_cast<MyItem*>(*i);
+        my_item* citem = static_cast<my_item*>(*i);
         profile::frame_index_type findex = citem->frame_index();
         if (findex == profile::invalid_frame_index)
             continue;
@@ -182,7 +182,7 @@ void MainWindow::clear_tree()
 {
     ui->treeWidget->clear();
     ctx.set_root(0);
-    MyItem* root = new MyItem(&ctx, profile::invalid_frame_index, "<root>", "<no module>");
+    my_item* root = new my_item(&ctx, profile::invalid_frame_index, "<root>", "<no module>");
     ctx.set_root(root);
 }
 

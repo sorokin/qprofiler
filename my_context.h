@@ -3,17 +3,17 @@
 
 #include <cstdlib>
 
-struct MyItem;
+struct my_item;
 
 struct MyContext
 {
     MyContext();
-    void set_root(MyItem* item);
-    MyItem* get_root();
+    void set_root(my_item* item);
+    my_item* get_root();
     size_t total_hits();
 
 private:
-    MyItem* root;
+    my_item* root;
 };
 
 #endif // MY_CONTEXT_H

@@ -1,9 +1,9 @@
-#ifndef MYITEMDELEGATE_H
-#define MYITEMDELEGATE_H
+#ifndef my_item_delegate_H
+#define my_item_delegate_H
 
 #include <QItemDelegate>
 
-struct MyItemDelegate : QItemDelegate
+struct my_item_delegate : QItemDelegate
 {
     Q_OBJECT
 
@@ -15,4 +15,4 @@ struct MyItemDelegate : QItemDelegate
                    const QModelIndex &index) const;
 };
 
-#endif // MYITEMDELEGATE_H
+#endif // my_item_delegate_H

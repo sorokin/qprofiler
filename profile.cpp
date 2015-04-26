@@ -47,7 +47,7 @@ profile::profile()
 {}
 
 template <typename ForwardIterator>
-void profile::insert_range(MyItem* c, ForwardIterator first, ForwardIterator last)
+void profile::insert_range(my_item* c, ForwardIterator first, ForwardIterator last)
 {
     for (auto i = first; i != last; ++i)
         c = c->push(this, *i);
@@ -55,7 +55,7 @@ void profile::insert_range(MyItem* c, ForwardIterator first, ForwardIterator las
 }
 
 template <typename ForwardIterator>
-void profile::insert_trace(MyItem* root, ForwardIterator first, ForwardIterator last, transformation const& tr)
+void profile::insert_trace(my_item* root, ForwardIterator first, ForwardIterator last, transformation const& tr)
 {
     ForwardIterator i = first;
     for (auto j = tr.roots.cbegin(); j != tr.roots.cend(); ++j)
@@ -68,7 +68,7 @@ void profile::insert_trace(MyItem* root, ForwardIterator first, ForwardIterator 
     insert_range(root, i, last);
 }
 
-void profile::build_tree(MyItem* root, transformation const& tr)
+void profile::build_tree(my_item* root, transformation const& tr)
 {
     switch (tr.direction)
     {

@@ -5,12 +5,12 @@
 MyContext::MyContext()
 {}
 
-void MyContext::set_root(MyItem* item)
+void MyContext::set_root(my_item* item)
 {
     root = item;
 }
 
-MyItem* MyContext::get_root()
+my_item* MyContext::get_root()
 {
     return root;
 }

@@ -1,4 +1,4 @@
-#include "myitemdelegate.h"
+#include "my_item_delegate.h"
 #include "call_tree_column.h"
 
 namespace
@@ -12,7 +12,7 @@ namespace
     }
 }
 
-void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void my_item_delegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     if (index.column() == CALL_TREE_PERCENTAGE_COLUMN
      || index.column() == CALL_TREE_SELF_PERCENTAGE_COLUMN)
@@ -25,7 +25,7 @@ void MyItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         QItemDelegate::paint(painter, option, index);
 }
 
-QSize MyItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize my_item_delegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     return QItemDelegate::sizeHint(option, index);
 }

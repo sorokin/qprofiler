@@ -5,8 +5,8 @@ Makefile
 cmake_install.cmake
 moc_mainwindow.cxx
 moc_mainwindow.cxx_parameters
-moc_myitemdelegate.cxx
-moc_myitemdelegate.cxx_parameters
+moc_my_item_delegate.cxx
+moc_my_item_delegate.cxx_parameters
 qprofiler
 qprofiler.cbp
 ui_mainwindow.h

@@ -40,9 +40,9 @@ struct key_compare
     }
 };
 
-struct MyItem : QTreeWidgetItem
+struct my_item : QTreeWidgetItem
 {
-    MyItem(MyContext* ctx, profile::frame_index_type findex, QString const& function_name, QString const& dso_name);
+    my_item(MyContext* ctx, profile::frame_index_type findex, QString const& function_name, QString const& dso_name);
 
     void update_percentage();
     void expand_all_greater_than(QTreeWidget* widget, size_t limit);
@@ -57,7 +57,7 @@ struct MyItem : QTreeWidgetItem
 
     void touch();
 
-    MyItem* push(profile* p, profile::frame_index_type findex);
+    my_item* push(profile* p, profile::frame_index_type findex);
 
 private:
     MyContext* ctx;
@@ -65,7 +65,7 @@ private:
     size_t self_hit_number;
     size_t hit_number;
 
-    std::unordered_map<profile::frame_index_type, MyItem*, profile::frame_index_type::hash> children;
+    std::unordered_map<profile::frame_index_type, my_item*, profile::frame_index_type::hash> children;
 };
 
 #endif // MY_ITEM_H

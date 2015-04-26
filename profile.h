@@ -7,7 +7,7 @@
 #include "string_pool.h"
 #include "object_pool.h"
 
-struct MyItem;
+struct my_item;
 
 struct transformation;
 
@@ -30,10 +30,10 @@ struct profile
 
     void open(std::string const& filename);
     template <typename ForwardIterator>
-    void insert_range(MyItem*, ForwardIterator first, ForwardIterator last);
+    void insert_range(my_item*, ForwardIterator first, ForwardIterator last);
     template <typename ForwardIterator>
-    void insert_trace(MyItem*, ForwardIterator first, ForwardIterator last, transformation const&);
-    void build_tree(MyItem*, transformation const&);
+    void insert_trace(my_item*, ForwardIterator first, ForwardIterator last, transformation const&);
+    void build_tree(my_item*, transformation const&);
 
     frame const& get_frame(frame_index_type index);
 
